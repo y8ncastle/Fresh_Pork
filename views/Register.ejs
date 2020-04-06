@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>신선 돼지 유통 관리 시스템</title>
+  </head>
+  <body>
+    <form method="post">
+      <h2>시스템 회원가입</h2>
+      <div>
+        <div>
+          <label for="id">사원번호&nbsp;</label>
+          <input type="text" name="reg_id" placeholder="최대 12자" maxlength="12" onchange=Check();>&nbsp;&nbsp;
+          <button type="submit" name="button" value="reg_check">중복확인</button><br><br>
+        </div>
+        <div>
+          <label for="pwd">비밀번호&nbsp;</label>
+          <input type="password" name="reg_passwd" placeholder="최대 15자" maxlength="15"><br><br>
+        </div>
+        <div>
+          <label for="pwd_check">비밀번호 확인&nbsp;</label>
+          <input type="password" name="reg_passwd_ch" maxlength="15"><br><br>
+        </div>
+        <div>
+          <label for="person_type">사원분류&nbsp;</label>
+          <select name="reg_person_t">
+            <option value="reg_customer" selected="selected">운송 담당자</option>
+            <option value="reg_driver">운전기사</option>
+          </select><br><br>
+        </div>
+        <div>
+          <label for="id">전화번호</label>
+          <input type="text" name="reg_phone" placeholder="- 없이 입력" maxlength="11">&nbsp;&nbsp;
+        </div><br><br>
+        <div>
+          <button type="submit" name="button" value="reg_register">회원가입</button>
+          <button type="submit" name="button" value="reg_cancel">취소</button><br><br>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
