@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const nm = require('nodemon');
 const app = express();
 
+var id_check = false;
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -21,12 +23,10 @@ const personnelSchema = new mongoose.Schema({
   },
   passwd: String,
   person_t: String,
-  name: String,
-  phone: String,
   status: String
 });
 
-const loginDB = mongoose.model("Login", personnelSchema, 'login');
+const userDB = mongoose.model("Login", personnelSchema, 'user');
 
 // Login page
 app.get('/', (req, res) => {
@@ -56,29 +56,46 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  var id_check = false;
   let button_status = req.body.button; // 중복확인
-  let regi_id = req.body.reg_id; // 사원번호
-  let regi_passwd = req.body_reg_passwd; // 비밀번호
-  let regi_passwd_ch = req.body_reg_passwd_ch; // 비밀번호 확인
-  let regi_person_t = req.body_reg_person_t; // 사원분류
-  let regi_phone = req.body_reg_phone; // 전화번호
+
+  var info = {
+    id: req.body.reg_id,
+    passwd: req.body.reg_passwd,
+    passwd_ch: req.body.reg_passwd_ch,
+    person_t: req.body.reg_person_t,
+    phone: req.body.reg_phone
+  };
 
   if (button_status === "reg_check") {
-    if (regi_id === "") {
+    if (!info.id) {
       console.log(date + "[Error] Checked with ID 'NULL'");
-      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location=history.back();</script>');
+      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location="/register";</script>');
     }
-    else {
+    else { // **********************************************
       res.send('<script type="text/javascript">alert("사용 가능한 사원번호입니다."); window.location=history.back();</script>');
     }
   }
   else if (button_status === "reg_register") {
-    if (regi_id === "") {
-      console.log(date + "[Error] Input NULL in ID tab")
-      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location=history.back();</script>');
+    if (!info.id) {
+      console.log(date + "[Error] Input NULL in ID tab");
+      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location="/register";</script>');
     }
+    else if (!info.passwd) {
+      console.log(date + "[Error] Input NULL in Password tab");
+      res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location=history.back();</script>');
+    }
+    else if (!info.passwd_ch) {
+      console.log(date + "[Error] Input NULL in Password check tab");
+      res.send('<script type="text/javascript">alert("비밀번호를 한 번 더 입력해주세요"); window.location=history.back();</script>');
+    }
+    else if (info.passwd !== info.passwd_ch) {
+      console.log(date + "[Error] Password is different with check");
+      res.send('<script type="text/javascript">alert("입력한 비밀번호가 서로 다릅니다"); window.location=history.back();</script>');
+    }
+    else {
 
+
+    }
   }
   else if (button_status === "reg_cancel") {
     console.log(date + "Registration form is closed by user");
