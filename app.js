@@ -35,10 +35,23 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   let button_status = req.body.button;
-  var login_status = req.body.login;
+
+  var login = {
+    id: req.body.login_id,
+    passwd: req.body.login_passwd
+  };
 
   if (button_status === "sign_in") {
-      res.redirect('/orderForm');
+    userDB.find({id:req.body.login_id, passwd:req.body.login_passwd}, 'person_t', (err, data) => {
+      var login_check = JSON.stringify(data);
+
+      if (!login.id || !login.passwd)
+        res.send('<script type="text/javascript">alert("사원번호와 비밀번호를 정확하게 입력해주세요"); window.location="/";</script>');
+      else if (login_check == '[]')
+        res.send('<script type="text/javascript">alert("가입되지 않은 사원입니다"); window.location="/";</script>');
+      else
+        res.redirect('/orderForm');
+    });
   }
   else
     res.redirect('/register');
@@ -56,45 +69,58 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  let button_status = req.body.button; // 중복확인
+  let button_status = req.body.button; // Register button
 
   var info = {
     id: req.body.reg_id,
     passwd: req.body.reg_passwd,
     passwd_ch: req.body.reg_passwd_ch,
-    person_t: req.body.reg_person_t,
-    phone: req.body.reg_phone
+    person_t: req.body.reg_person_t
   };
 
-  if (button_status === "reg_check") {
-    if (!info.id) {
-      console.log(date + "[Error] Checked with ID 'NULL'");
-      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location="/register";</script>');
-    }
-    else { // **********************************************
-      res.send('<script type="text/javascript">alert("사용 가능한 사원번호입니다."); window.location=history.back();</script>');
-    }
-  }
-  else if (button_status === "reg_register") {
-    if (!info.id) {
+  if (button_status === "reg_register") {
+    if (!info.id || info.id[0] === " ") {
       console.log(date + "[Error] Input NULL in ID tab");
-      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요"); window.location="/register";</script>');
+      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요 (공백 제외)"); window.location="/register";</script>');
+    }
+    else if (!info.id) {
+      userDB.findOne({id:info.id}, (err, data) => {
+        if (data.id) {
+          console.log(data + "[Error] The ID already exists");
+          res.send('<script type="text/javascript">alert("이미 가입되어 있는 사원번호입니다"); window.location="/register";</script>')
+        }
+      });
     }
     else if (!info.passwd) {
       console.log(date + "[Error] Input NULL in Password tab");
-      res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location=history.back();</script>');
+      res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location="/register";</script>');
     }
     else if (!info.passwd_ch) {
       console.log(date + "[Error] Input NULL in Password check tab");
-      res.send('<script type="text/javascript">alert("비밀번호를 한 번 더 입력해주세요"); window.location=history.back();</script>');
+      res.send('<script type="text/javascript">alert("비밀번호를 다시 입력해주세요"); window.location="/register";</script>');
     }
     else if (info.passwd !== info.passwd_ch) {
       console.log(date + "[Error] Password is different with check");
-      res.send('<script type="text/javascript">alert("입력한 비밀번호가 서로 다릅니다"); window.location=history.back();</script>');
+      res.send('<script type="text/javascript">alert("입력한 비밀번호가 서로 다릅니다"); window.location="/register";</script>');
     }
     else {
+      let userDB_i = new userDB();
 
+      userDB_i.id = info.id;
+      userDB_i.passwd = info.passwd;
+      userDB_i.person_t = info.person_t;
+      userDB_i.status = "ready";
 
+      userDB_i.save((err) => {
+        if(err) {
+          console.error(err);
+          return;
+        }
+        else {
+          console.log(date + "User " + info.id + " has registered");
+          res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다"); window.location="/";</script>')
+        }
+      });
     }
   }
   else if (button_status === "reg_cancel") {
