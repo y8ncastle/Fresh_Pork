@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const nm = require('nodemon');
 const app = express();
 
-var id_check = false;
-
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -71,7 +69,7 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   let button_status = req.body.button; // Register button
 
-  var info = {
+  var info = { // text area
     id: req.body.reg_id,
     passwd: req.body.reg_passwd,
     passwd_ch: req.body.reg_passwd_ch,
@@ -80,7 +78,7 @@ app.post('/register', (req, res) => {
 
   if (button_status === "reg_register") {
     if (!info.id || info.id[0] === " ") {
-      console.log(date + "[Error] Input NULL in ID tab");
+      console.log(date + "[Error] Input NULL in ID");
       res.send('<script type="text/javascript">alert("사원번호를 입력해주세요 (공백 제외)"); window.location="/register";</script>');
     }
     else if (!info.id) {
@@ -92,11 +90,11 @@ app.post('/register', (req, res) => {
       });
     }
     else if (!info.passwd) {
-      console.log(date + "[Error] Input NULL in Password tab");
+      console.log(date + "[Error] Input NULL in Password");
       res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location="/register";</script>');
     }
     else if (!info.passwd_ch) {
-      console.log(date + "[Error] Input NULL in Password check tab");
+      console.log(date + "[Error] Input NULL in Password check");
       res.send('<script type="text/javascript">alert("비밀번호를 다시 입력해주세요"); window.location="/register";</script>');
     }
     else if (info.passwd !== info.passwd_ch) {
@@ -112,12 +110,12 @@ app.post('/register', (req, res) => {
       userDB_i.status = "ready";
 
       userDB_i.save((err) => {
-        if(err) {
+        if (err) {
           console.error(err);
           return;
         }
         else {
-          console.log(date + "User " + info.id + " has registered");
+          console.log(date + "[Success] User " + info.id + " has registered");
           res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다"); window.location="/";</script>')
         }
       });
