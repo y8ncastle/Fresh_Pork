@@ -46,7 +46,7 @@ const driverSchema = new mongoose.Schema({
   date: String,
   dv_start: String,
   dv_done: String,
-  dv_check: String,
+  dv_back: String,
   driver: String,
   port_t: String,
   amount: Number
@@ -58,7 +58,7 @@ const driverDB = db.model("Driver", driverSchema, 'driver');
 
 // Real time check
 let temp_date = new Date();
-date = "[Log] " + temp_date.getFullYear() + "/" + parseInt(temp_date.getMonth()+1) + "/" +
+date = "[Log] " + temp_date.getFullYear() + '/' + parseInt(temp_date.getMonth()+1) + '/' +
         temp_date.getDate() + " " + temp_date.getHours() + ":" + temp_date.getMinutes() + ":" +
         temp_date.getSeconds() + " > ";
 
@@ -82,22 +82,20 @@ app.post('/', (req, res) => {
       var login_check = JSON.stringify(data);
 
       if (!login.id || !login.passwd) {
-        console.log(data + "[Error] Input NULL in ID or Passwd");
+        console.log(date + "[Error] Input NULL in ID or Passwd");
         res.send('<script type="text/javascript">alert("사원번호와 비밀번호를 정확하게 입력해주세요"); window.location="/";</script>');
       }
       else if (login_check == '[]') {
-        console.log(data + "[Error] ID or Passwd do not match to DB")
+        console.log(date + "[Error] ID or Passwd do not match to DB")
         res.send('<script type="text/javascript">alert("로그인 정보가 올바르지 않습니다"); window.location="/";</script>');
       }
 
       // Check person type
       else {
-        if (data.includes('manager')) {
-          res.redirect('/manager');
-        }
-        else {
-          res.redirect('/driver');
-        }
+        if (login_check.includes("manager"))
+          res.send('<script type="text/javascript">alert("관리자님 환영합니다"); window.location="/manager";</script>');
+        else
+          res.send('<script type="text/javascript">alert("기사님 환영합니다"); window.location="/driver";</script>');
       }
     });
   }
@@ -107,7 +105,21 @@ app.post('/', (req, res) => {
 
 // Manager page rendering
 app.get('/manager', (req, res) => {
+  console.log(date + "Manager page is opened");
   res.render('Manager');
+});
+
+// Manager page control
+app.post('/manager', (req, res) => {
+  let button_status = req.body.button;
+
+  if (button_status === "order_form_cr") {
+    console.log(date + "New order form is opened");
+    res.render('OrderForm');
+  }
+  else {
+    res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location"/";</script>');
+  }
 });
 
 // Driver page rendering
@@ -140,7 +152,7 @@ app.post('/register', (req, res) => {
     else if (!info.id) {
       userDB.findOne({id:info.id}, (err, data) => {
         if (data.id) {
-          console.log(data + "[Error] The ID already exists");
+          console.log(date + "[Error] The ID already exists");
           res.send('<script type="text/javascript">alert("이미 가입되어 있는 사원번호입니다"); window.location="/register";</script>')
         }
       });
