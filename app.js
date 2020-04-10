@@ -188,13 +188,32 @@ app.post('/manager', (req, res) => {
 
   if (button_status === "order_form_cr") {
     console.log(date + "New order form is opened");
-    res.render('OrderForm');
+    res.redirect('/orderForm');
   }
   else {
     console.log(date + "Manager '" + "" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
   }
 });
+
+// Order page rendering
+app.get('/orderForm', (req, res) => {
+  console.log(date + "New order form is opened");
+  res.render("OrderForm");
+});
+
+// Order page contol
+app.post('/orderForm', (req, res) => {
+  let button_status = req.body.button;
+
+  if (button_status === "order_confirm") {
+    console.log(date + "Manager '" + "[]" + "' confirmed an order");
+  }
+  else {
+    console.log(date + "Manager '" + "[]" + "' canceled the order");
+    res.send('<script type="text/javascript">alert("주문서 등록을 취소합니다"); window.location="/manager";</script>');
+  }
+})
 
 // Driver page rendering
 app.get('/driver', (req, res) => {
@@ -207,30 +226,19 @@ app.post('/driver', (req, res) => {
   let button_status = req.body.button;
 
   if (button_status === "delivery_noti") {
-    console.log(date + "[]" + " opened delivery notification page")
+    console.log(date + "'[]" + "' opened delivery notification page")
   }
   else if (button_status === "delivery_start") {
-    console.log(date + "[]" + " has started delivery");
+    console.log(date + "'[]" + "' has started delivery");
   }
   else if (button_status === "delivery_done") {
-    console.log(date + "[]" + " has done for delivery");
+    console.log(date + "'[]" + "' has done for delivery");
   }
   else if (button_status === "delivery_back") {
-    console.log(date + "[]" + " status is changed to 'ready'");
+    console.log(date + "'[]" + "' status is changed to 'ready'");
   }
   else {
     console.log(date + "Driver '" + "[]" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
   }
-})
-
-// Order page rendering
-app.get('/orderForm', (req, res) => {
-  console.log(date + "New order form is opened");
-  res.render("OrderForm");
-});
-
-// Order page contol
-app.post('/orderForm', (req, res) => {
-  ;
 })
