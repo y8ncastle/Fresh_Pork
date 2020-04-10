@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <h2>주문서 등록</h2>
-  </body>
-</html>
+
+<head>
+  <meta charset="utf-8">
+  <title>신선 돼지 유통 관리 시스템</title>
+</head>
+
+<body>
+  <form method="post">
+    <h2>주문서 등록</h2><br>
+    <div>
+      <label for="date">주문 일자&nbsp;</label>
+      <input type="date" name="order_date" value="order_date"><br><br>
+      <label for="address">배송지&nbsp;</label>
+      <input type="text" name="order_address" maxlength="50"><br><br>
+      <label for="person_t">기사 선택&nbsp;</label>
+      <select name="order_driver">
+        <option value="select" selected="selected">--------</option>
+      </select><br><br>
+      <label for="pork_type">고기 종류&nbsp;</label>
+      <select name="pork_t">
+        <option value="select" selected="selected">--------</option>
+        <option value="pork_belly">삼겹살</option>
+        <option value="pork_neck">항정살</option>
+        <option value="pork_neck_2">목살</option>
+      </select>
+    </div><br>
+    <label for="weight">무게&nbsp;</label>
+    <input type="number" name="order_kg">&nbsp;&nbsp;kg<br><br><br>
+    <div>
+      <button type="submit" name="button" value="order_confirm">확인</button>
+      <button type="submit" name="button" value="order_cancel">취소</button><br><br>
+    </div>
+  </form>
+</body>

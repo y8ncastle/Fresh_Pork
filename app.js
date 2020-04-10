@@ -191,7 +191,7 @@ app.post('/manager', (req, res) => {
     res.render('OrderForm');
   }
   else {
-    console.log(date + "Manager '" + "[]" + "' logged out");
+    console.log(date + "Manager '" + "" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
   }
 });
