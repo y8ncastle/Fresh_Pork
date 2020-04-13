@@ -9,6 +9,9 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
+// Global variables
+let button_status;
+
 // Server setting
 const port = process.env.Port || 3827;
 
@@ -75,7 +78,7 @@ app.get('/', (req, res) => {
 
 // Login page control
 app.post('/', (req, res) => {
-  let button_status = req.body.button;
+  button_status = req.body.button;
 
   var login = {
     id: req.body.login_id,
@@ -97,10 +100,14 @@ app.post('/', (req, res) => {
 
       // Check person type
       else {
-        if (login_check.includes("manager"))
+        if (login_check.includes("manager")) {
+          console.log(date + "'[]" + "' logged in as a manager");
           res.send('<script type="text/javascript">alert("관리자님 환영합니다"); window.location="/manager";</script>');
-        else
+        }
+        else {
+          console.log(date + "'[]" + "' logged in as a driver");
           res.send('<script type="text/javascript">alert("기사님 환영합니다"); window.location="/driver";</script>');
+        }
       }
     });
   }
@@ -116,7 +123,7 @@ app.get('/register', (req, res) => {
 
 // Registration page control
 app.post('/register', (req, res) => {
-  let button_status = req.body.button;
+  button_status = req.body.button;
 
   var info = {
     id: req.body.reg_id,
@@ -178,13 +185,12 @@ app.post('/register', (req, res) => {
 
 // Manager page rendering
 app.get('/manager', (req, res) => {
-  console.log(date + "'[]" + "' logged in as a manager");
   res.render('Manager');
 });
 
 // Manager page control
 app.post('/manager', (req, res) => {
-  let button_status = req.body.button;
+  button_status = req.body.button;
 
   if (button_status === "order_form_cr") {
     console.log(date + "New order form is opened");
@@ -199,12 +205,12 @@ app.post('/manager', (req, res) => {
 // Order page rendering
 app.get('/orderForm', (req, res) => {
   console.log(date + "New order form is opened");
-  res.render("OrderForm");
+  res.render('OrderForm');
 });
 
 // Order page contol
 app.post('/orderForm', (req, res) => {
-  let button_status = req.body.button;
+  button_status = req.body.button;
 
   if (button_status === "order_confirm") {
     console.log(date + "Manager '" + "[]" + "' confirmed an order");
@@ -217,28 +223,100 @@ app.post('/orderForm', (req, res) => {
 
 // Driver page rendering
 app.get('/driver', (req, res) => {
-  console.log(date + "'[]" + "' logged in as a driver");
   res.render('Driver');
 });
 
 // Driver page control
 app.post('/driver', (req, res) => {
-  let button_status = req.body.button;
+  button_status = req.body.button;
 
   if (button_status === "delivery_noti") {
-    console.log(date + "'[]" + "' opened delivery notification page")
+    res.redirect('/deliveryStatus')
   }
   else if (button_status === "delivery_start") {
-    console.log(date + "'[]" + "' has started delivery");
+    res.redirect('/deliveryStart')
   }
   else if (button_status === "delivery_done") {
-    console.log(date + "'[]" + "' has done for delivery");
+    res.redirect('/deliveryDone')
   }
   else if (button_status === "delivery_back") {
-    console.log(date + "'[]" + "' status is changed to 'ready'");
+    res.redirect('/driverBack')
   }
   else {
     console.log(date + "Driver '" + "[]" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
+  }
+})
+
+// Order Status page rendering
+app.get('/deliveryStatus', (req, res) => {
+  console.log(date + "Driver '[]" + "' entered into order status page");
+  res.render('DeliveryStatus');
+})
+
+// Order Status page control
+app.post('/deliveryStatus', (req, res) => {
+  button_status = req.body.button;
+
+  if (button_status === "order_check") {
+    console.log(date + "Driver '" + '[]' + "' checked delivery status");
+    res.redirect('/driver')
+  }
+})
+
+// Order Start page rendering
+app.get('/deliveryStart', (req, res) => {
+  console.log(date + "Driver '[]" + "' entered into delivery start page");
+  res.render('DeliveryStart');
+})
+
+// Order Start page control
+app.post('/deliveryStart', (req, res) => {
+  button_status = req.body.button;
+
+  if (button_status === "delivery_confirm") {
+    console.log(date + "Driver '[]" + "' has started delivery");
+  }
+  else {
+    console.log(date + "Driver '" + '[]' + "' canceled delivery start");
+    res.redirect('/driver');
+  }
+})
+
+// Order Done page rendering
+app.get('/deliveryDone', (req, res) => {
+  console.log(date + "Driver '[]" + "' entered into delivery done page");
+  res.render('DeliveryDone');
+})
+
+// Order Done page control
+app.post('/deliveryDone', (req, res) => {
+  button_status = req.body.button;
+
+  if (button_status === "delivery_done") {
+    ;
+  }
+  else {
+    console.log(date + "Driver '" + '[]' + "' canceled delivery done");
+    res.redirect('/driver');
+  }
+})
+
+// Order Back page rendering
+app.get('/driverBack', (req, res) => {
+  console.log(date + "Driver '[]" + "' entered into driver back page");
+  res.render('DriverBack');
+})
+
+// Order Back page control
+app.post('/driverBack', (req, res) => {
+  button_status = req.body.button;
+
+  if (button_status === "driver_back") {
+    ;
+  }
+  else {
+    console.log(date + "Driver '" + '[]' + "' canceled driver back");
+    res.redirect('/driver');
   }
 })
