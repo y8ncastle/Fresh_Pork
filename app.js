@@ -90,34 +90,34 @@ app.post('/', (req, res) => {
       var login_check = JSON.stringify(data);
 
       if (!login.id || !login.passwd) {
-        console.log(date + "[Error] Input NULL in ID or Passwd for login");
         res.send('<script type="text/javascript">alert("사원번호와 비밀번호를 정확하게 입력해주세요"); window.location="/";</script>');
+        console.log(date + "[Error] Input NULL in ID or Passwd for login");
       }
       else if (login_check == '[]') {
-        console.log(date + "[Error] ID or Passwd do not match to DB");
         res.send('<script type="text/javascript">alert("로그인 정보가 올바르지 않습니다"); window.location="/";</script>');
+        console.log(date + "[Error] ID or Passwd does not match to DB");
       }
 
       // Check person type
       else {
         if (login_check.includes("manager")) {
-          console.log(date + "'[]" + "' logged in as a manager");
           res.send('<script type="text/javascript">alert("관리자님 환영합니다"); window.location="/manager";</script>');
+          console.log(date + "'[]" + "' logged in as a manager");
         }
         else {
-          console.log(date + "'[]" + "' logged in as a driver");
           res.send('<script type="text/javascript">alert("기사님 환영합니다"); window.location="/driver";</script>');
+          console.log(date + "'[]" + "' logged in as a driver");
         }
       }
     });
   }
   else
     res.redirect('/register');
+    console.log(date + "New registration form is opened");
 });
 
 // Registration page rendering
 app.get('/register', (req, res) => {
-  console.log(date + "New registration form is opened");
   res.render('Register');
 });
 
@@ -133,49 +133,49 @@ app.post('/register', (req, res) => {
   };
 
   if (button_status === "reg_register") {
-    if (!info.id || info.id[0] === " ") {
-      console.log(date + "[Error] Input NULL in ID");
-      res.send('<script type="text/javascript">alert("사원번호를 입력해주세요 (공백 제외)"); window.location="/register";</script>');
-    }
-    else if (!info.id) {
-      userDB.findOne({id:info.id}, (err, data) => {
-        if (data.id) {
-          console.log(date + "[Error] The ID already exists");
-          res.send('<script type="text/javascript">alert("이미 가입되어 있는 사원번호입니다"); window.location="/register";</script>')
-        }
-      });
-    }
-    else if (!info.passwd) {
-      console.log(date + "[Error] Input NULL in Password");
-      res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location="/register";</script>');
-    }
-    else if (!info.passwd_ch) {
-      console.log(date + "[Error] Input NULL in Password check");
-      res.send('<script type="text/javascript">alert("비밀번호를 다시 입력해주세요"); window.location="/register";</script>');
-    }
-    else if (info.passwd !== info.passwd_ch) {
-      console.log(date + "[Error] Password is different with check");
-      res.send('<script type="text/javascript">alert("입력한 비밀번호가 서로 다릅니다"); window.location="/register";</script>');
-    }
-    else {
-      let userDB_i = new userDB();
+    userDB.findOne({id:info.id}, (err, data) => {
+      var id_check = JSON.stringify(data);
 
-      userDB_i.id = info.id;
-      userDB_i.passwd = info.passwd;
-      userDB_i.person_t = info.person_t;
-      userDB_i.status = "ready";
+      if (!info.id || info.id[0] === " ") {
+        res.send('<script type="text/javascript">alert("사원번호를 입력해주세요 (공백 제외)"); window.location="/register";</script>');
+        console.log(date + "[Error] Input NULL in ID");
+      }
+      else if (id_check.includes(info.id)) {
+        res.send('<script type="text/javascript">alert("이미 가입되어 있는 사원번호입니다"); window.location="/register";</script>');
+        console.log(date + "[Error] The ID already exists");
+      }
+      else if (!info.passwd) {
+        res.send('<script type="text/javascript">alert("비밀번호를 입력해주세요"); window.location="/register";</script>');
+        console.log(date + "[Error] Input NULL in Passwd");
+      }
+      else if (!info.passwd_ch) {
+        res.send('<script type="text/javascript">alert("비밀번호를 다시 입력해주세요"); window.location="/register";</script>');
+        console.log(date + "[Error] Input NULL in Passwd check");
+      }
+      else if (info.passwd !== info.passwd_ch) {
+        res.send('<script type="text/javascript">alert("입력한 비밀번호가 서로 다릅니다"); window.location="/register";</script>');
+        console.log(date + "[Error] Passwd is different with check");
+      }
+      else {
+        let userDB_i = new userDB();
 
-      userDB_i.save((err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        else {
-          console.log(date + "[Success] User '" + info.id + "' has registered");
-          res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다"); window.location="/";</script>')
-        }
-      });
-    }
+        userDB_i.id = info.id;
+        userDB_i.passwd = info.passwd;
+        userDB_i.person_t = info.person_t;
+        userDB_i.status = "ready";
+
+        userDB_i.save((err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          else {
+            res.send('<script type="text/javascript">alert("회원가입이 완료되었습니다"); window.location="/";</script>');
+            console.log(date + "[Success] User '" + info.id + "' has registered");
+          }
+        });
+      }
+    });
   }
   else if (button_status === "reg_cancel") {
     console.log(date + "Registration form is closed by user");
@@ -197,14 +197,13 @@ app.post('/manager', (req, res) => {
     res.redirect('/orderForm');
   }
   else {
-    console.log(date + "Manager '" + "" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
+    console.log(date + "Manager '" + "[]" + "' logged out");
   }
 });
 
 // Order page rendering
 app.get('/orderForm', (req, res) => {
-  console.log(date + "New order form is opened");
   res.render('OrderForm');
 });
 
@@ -216,8 +215,8 @@ app.post('/orderForm', (req, res) => {
     console.log(date + "Manager '" + "[]" + "' confirmed an order");
   }
   else {
-    console.log(date + "Manager '" + "[]" + "' canceled the order");
     res.send('<script type="text/javascript">alert("주문서 등록을 취소합니다"); window.location="/manager";</script>');
+    console.log(date + "Manager '" + "[]" + "' canceled the order");
   }
 })
 
@@ -243,14 +242,14 @@ app.post('/driver', (req, res) => {
     res.redirect('/driverBack')
   }
   else {
-    console.log(date + "Driver '" + "[]" + "' logged out");
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
+    console.log(date + "Driver '" + "[]" + "' logged out");
   }
 })
 
 // Order Status page rendering
 app.get('/deliveryStatus', (req, res) => {
-  console.log(date + "Driver '[]" + "' entered into order status page");
+  console.log(date + "Driver '" + "[]" + "' entered into order status page");
   res.render('DeliveryStatus');
 })
 
@@ -259,7 +258,7 @@ app.post('/deliveryStatus', (req, res) => {
   button_status = req.body.button;
 
   if (button_status === "order_check") {
-    console.log(date + "Driver '" + '[]' + "' checked delivery status");
+    console.log(date + "Driver '" + "[]" + "' checked delivery status");
     res.redirect('/driver')
   }
 })
@@ -278,7 +277,7 @@ app.post('/deliveryStart', (req, res) => {
     console.log(date + "Driver '[]" + "' has started delivery");
   }
   else {
-    console.log(date + "Driver '" + '[]' + "' canceled delivery start");
+    console.log(date + "Driver '" + "[]" + "' canceled delivery start");
     res.redirect('/driver');
   }
 })
@@ -297,7 +296,7 @@ app.post('/deliveryDone', (req, res) => {
     ;
   }
   else {
-    console.log(date + "Driver '" + '[]' + "' canceled delivery done");
+    console.log(date + "Driver '" + "[]" + "' canceled delivery done");
     res.redirect('/driver');
   }
 })
@@ -316,7 +315,7 @@ app.post('/driverBack', (req, res) => {
     ;
   }
   else {
-    console.log(date + "Driver '" + '[]' + "' canceled driver back");
+    console.log(date + "Driver '" + "[]" + "' canceled driver back");
     res.redirect('/driver');
   }
 })
