@@ -7,10 +7,10 @@
 
 > **JavaScript**   
 - body-parser   
-    - ejs   
-    - express   
-    - mongoose   
-	- nodemon   
+- ejs   
+- express   
+- mongoose   
+- nodemon   
 > **Node.js**   
 > **MongoDB**   
 > **Ethereum Network**   
