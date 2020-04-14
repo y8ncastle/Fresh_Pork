@@ -5,18 +5,18 @@
    ***   
 ## Requirement   
 
-> *JavaScript*   
-		> body-parser   
-		> ejs   
-		> express   
-		> mongoose   
-		> nodemon   
-> *Node.js*   
-> *MongoDB*   
-> *Ethereum Network*   
+> **JavaScript**   
+- body-parser   
+    - ejs   
+    - express   
+    - mongoose   
+	- nodemon   
+> **Node.js**   
+> **MongoDB**   
+> **Ethereum Network**   
    ***   
 ## Tools   
 
 > Atom   
-> Cmder
+> Cmder   
 > Git bash
