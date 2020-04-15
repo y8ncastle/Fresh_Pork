@@ -9,10 +9,16 @@
 
 <body>
   <form method="post">
-    <h2>운송 시작 정보</h2><br>
+    <h2>운송 시작 요청</h2><br>
     <div>
-      <label for="id">사원번호&nbsp;</label>
-      <input type="text" name="manager_id" value="" disabled>
+      <label for="ordered_date">주문 일자&nbsp;</label>
+      <input type="text" name="ordered_date" value="<%=stat_date%>" disabled><br><br>
+      <label for="ordered_address" style="vertical-align:top">배송지&nbsp;</label>
+      <textarea name="ordered_address" style="resize:none" cols="50" rows="2" disabled><%=stat_adr%></textarea><br><br>
+      <label for="set_driver">운전 기사&nbsp;</label>
+      <input type="text" name="set_driver" value="<%=stat_driver%>" disabled><br><br>
+      <label for="ordered_pork">고기 종류&nbsp;</label>
+      <input type="text" name="ordered_pork" value="<%=stat_pork%>" disabled>
     </div><br><br>
     <div>
       <button type="submit" name="button" value="delivery_confirm">배송시작</button>

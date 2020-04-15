@@ -85,11 +85,19 @@
 4.1. 모든 정보 미기입 확인
 4.2. 주문 일자 기입, 나머지 정보 미기입 확인
 4.3. 주문 일자·배송지 기입, 나머지 정보 미기입 확인
-4.4. 주문 일자·배송지 기입, 기사 선택, 나머지 정보 미기입 확인
-4.5. 주문 일자·배송지 기입, 기사·고기 종류 선택, 무게 미기입 확인
+4.4. 주문 일자·배송지 기입, 기사 선택, 고기 종류 기본(삼겹살), 무게 미기입 확인
+4.5. 주문 일자·배송지 기입, 기사 선택, 고기 종류 기본(삼겹살), 무게 1,000kg 초과 확인
 4.6. 배송지 기입, 나머지 정보 미기입 확인
-
-4. 취소
+4.7. 배송지 기입, 기사 선택, 고기 종류 기본(삼겹살), 나머지 정보 미기입 확인
+4.8. 배송지 기입, 기사 선택, 고기 종류 기본(삽겹살), 무게 기입, 주문 일자 미기입 확인
+4.9. 배송지 공백, 나머지 정보 미기입 확인
+4.10. 기사 선택, 나머지 정보 미기입 확인
+4.11. 기사 선택, 고기 종류 기본(삼겹살), 무게 기입, 나머지 정보 미기입 확인
+4.12. 모든 정보 기입, 기사 선택(A) 확인
+4.13. 모든 정보 기입, 기사 선택(B) 확인
+4.14. 모든 정보 기입, 고기 종류(항정살) 확인
+4.15. 모든 정보 기입, 고기 종류(목살) 확인
+4.16. 취소
 
 4. New order form is opened
 4.1. [Error] Input NULL in order date
@@ -98,10 +106,56 @@
 4.2.1. 배송지를 입력해주세요 (공백 제외) (팝업)
 4.3. [Error] No driver has been chosen
 4.3.1. 배송 기사를 선택해주세요 (팝업)
+4.4. [Error] Input NULL or wrong value in pork weight
+4.4.1. 고기 무게를 정확히 입력해주세요 (소수점 제외, 1,000kg 이하) (팝업)
+4.5. [Error] Input NULL or wrong value in pork weight
+4.5.1. 고기 무게를 정확히 입력해주세요 (소수점 제외, 1,000kg 이하) (팝업)
+4.6. [Error] Input NULL in order date
+4.6.1. 주문 일자를 입력해주세요 (팝업)
+4.7. [Error] Input NULL in order date
+4.7.1. 주문 일자를 입력해주세요 (팝업)
+4.8. [Error] Input NULL in order date
+4.8.1. 주문 일자를 입력해주세요 (팝업)
+4.9. [Error] Input NULL in order date
+4.9.1. 주문 일자를 입력해주세요 (팝업)
+4.10. [Error] Input NULL in order date
+4.10.1. 주문 일자를 입력해주세요 (팝업)
+4.11. [Error] Input NULL in order date
+4.11.1. 주문 일자를 입력해주세요 (팝업)
+4.12. [Success] Manager 'user' has made an order request
+4.12.1. 새로운 주문이 등록되었습니다 (팝업)
+4.13. [Success] Manager 'user' has made an order request
+4.13.1. 새로운 주문이 등록되었습니다 (팝업)
+4.14. [Success] Manager 'user' has made an order request
+4.14.1. 새로운 주문이 등록되었습니다 (팝업)
+4.15. [Success] Manager 'user' has made an order request
+4.15.1 새로운 주문이 등록되었습니다 (팝업)
+4.16. Manager 'user' canceled the order
+4.16.1. 주문서 등록을 취소합니다 (팝업)
 
 
-4..1. Manager 'user' canceled the order
-4..1.1. 주문서 등록을 취소합니다 (팝업)
+5. 운전 기사 관리 시스템 화면
+5.1. 배정알림
+5.2. 운송시작
+5.3. 운송완료
+5.4. 회사복귀
+5.5. 로그아웃
+
+5. 'user' logged in as a driver
+5.1. Driver 'user' entered into order status page
+5.2. Driver 'user' entered into delivery start page
+5.3. Driver 'user' entered into deliver done page
+5.4. Driver 'user' entered into driver back page
+5.5. Driver '[]' logged out
+5.5.1. 로그아웃 되었습니다 (팝업)
+
+
+6. 배정알림 화면
+6.1. 주문 일자, 배송지, 운전 기사, 고기 종류 표시 확인
+6.2. 확인
+
+6.2. Driver 'user' checked delivery status
 
 
 ** 잘못된 접근 예외처리
+** 날짜 선택 오늘부터 처리

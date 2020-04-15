@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 // Global variables
-let button_status;
+let button_status, current_user;
 
 // Server setting
 const port = process.env.Port || 2381;
@@ -108,12 +108,14 @@ app.post('/', (req, res) => {
           res.send('<script type="text/javascript">alert("기사님 환영합니다"); window.location="/driver";</script>');
           console.log(date + "'[]" + "' logged in as a driver");
         }
+        current_user = login.id;
       }
     });
   }
-  else
+  else {
     res.redirect('/register');
     console.log(date + "New registration form is opened");
+  }
 });
 
 // Registration page rendering
@@ -189,7 +191,7 @@ app.post('/register', (req, res) => {
 
 // Manager page rendering
 app.get('/manager', (req, res) => {
-  res.render('Manager');
+  res.render('Manager', {manager_info:current_user});
 });
 
 // Manager page control
@@ -225,7 +227,7 @@ app.post('/orderForm', (req, res) => {
     date: req.body.order_date,
     order_adr: req.body.order_address,
     order_drv: req.body.order_driver,
-    pork_t: req.body.pork_type,
+    pork_type: req.body.pork_t,
     weight: req.body.order_kg
   };
 
@@ -242,23 +244,45 @@ app.post('/orderForm', (req, res) => {
       res.send('<script type="text/javascript">alert("배송 기사를 선택해주세요"); window.location="/orderForm";</script>');
       console.log(date + "[Error] No driver has been chosen");
     }
-    else if (!info.weight) {
-      res.send('<script type="text/javascript">alert("고기 무게를 입력해주세요 (소수점 제외)"); window.location="/orderForm";</script>');
-      console.log(date + "[Error] Input NULL in pork weight");
+    else if (!info.weight || Number(info.weight) > 1000) {
+      res.send('<script type="text/javascript">alert("고기 무게를 정확히 입력해주세요 (소수점 제외, 1,000kg 이하)"); window.location="/orderForm";</script>');
+      console.log(date + "[Error] Input NULL or wrong value in pork weight");
     }
     else {
-      console.log(date + "[Success] Manager '" + "[]" + "' confirmed an order");
+      let orderDB_i = new orderDB();
+
+      orderDB_i.date = info.date;
+      orderDB_i.address = info.order_adr;
+      orderDB_i.driver = info.order_drv;
+      orderDB_i.pork_t = info.pork_type;
+      orderDB_i.amount = info.weight;
+
+      orderDB_i.save((err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        else {
+          userDB.findOne({id:info.order_drv}, (err, data) => {
+            data.status = "set";
+            data.save();
+          });
+
+          res.send('<script type="text/javascript">alert("새로운 주문이 등록되었습니다"); window.location="/manager";</script>');
+          console.log(date + "[Success] Manager '" + "[]" + "' has made an order request");
+        }
+      });
     }
   }
   else {
     res.send('<script type="text/javascript">alert("주문서 등록을 취소합니다"); window.location="/manager";</script>');
     console.log(date + "Manager '" + "[]" + "' canceled the order");
   }
-})
+});
 
 // Driver page rendering
 app.get('/driver', (req, res) => {
-  res.render('Driver');
+  res.render('Driver', {driver_info:current_user});
 });
 
 // Driver page control
@@ -266,28 +290,68 @@ app.post('/driver', (req, res) => {
   button_status = req.body.button;
 
   if (button_status === "delivery_noti") {
-    res.redirect('/deliveryStatus')
+    res.redirect('/deliveryStatus');
+    console.log(date + "Driver '" + "[]" + "' entered into order status page");
   }
   else if (button_status === "delivery_start") {
-    res.redirect('/deliveryStart')
+    res.redirect('/deliveryStart');
+    console.log(date + "Driver '[]" + "' entered into delivery start page");
   }
   else if (button_status === "delivery_done") {
-    res.redirect('/deliveryDone')
+    res.redirect('/deliveryDone');
+    console.log(date + "Driver '[]" + "' entered into delivery done page");
   }
   else if (button_status === "delivery_back") {
-    res.redirect('/driverBack')
+    res.redirect('/driverBack');
+    console.log(date + "Driver '[]" + "' entered into driver back page");
   }
   else {
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
     console.log(date + "Driver '" + "[]" + "' logged out");
   }
-})
+});
+
+function driver_information(res, loc) {
+  orderDB.find({driver:current_user}, (err, data) => {
+    var status_date = data.map((obj) => {
+      return obj.date;
+    });
+
+    var status_adr = data.map((obj) => {
+      return obj.address;
+    });
+
+    var status_driver = data.map((obj) => {
+      return obj.driver;
+    });
+
+    var status_pork = data.map((obj) => {
+      return obj.pork_t;
+    });
+
+    var status_amount = data.map((obj) => {
+      return obj.amount;
+    });
+
+    var t_status_pork;
+
+    if (status_pork === "pork_belly")
+      t_status_pork = "삼겹살";
+    else if (status_pork === "pork_neck")
+      t_status_pork = "항정살";
+    else
+      t_status_pork = "목살";
+
+    t_status_pork += " " + status_amount + "kg";
+
+    res.render(loc, {stat_date:status_date, stat_adr:status_adr, stat_driver:status_driver, stat_pork:t_status_pork});
+  });
+}
 
 // Order Status page rendering
 app.get('/deliveryStatus', (req, res) => {
-  console.log(date + "Driver '" + "[]" + "' entered into order status page");
-  res.render('DeliveryStatus');
-})
+  driver_information(res, 'DeliveryStatus');
+});
 
 // Order Status page control
 app.post('/deliveryStatus', (req, res) => {
@@ -295,15 +359,14 @@ app.post('/deliveryStatus', (req, res) => {
 
   if (button_status === "order_check") {
     console.log(date + "Driver '" + "[]" + "' checked delivery status");
-    res.redirect('/driver')
+    res.redirect('/driver');
   }
-})
+});
 
 // Order Start page rendering
 app.get('/deliveryStart', (req, res) => {
-  console.log(date + "Driver '[]" + "' entered into delivery start page");
-  res.render('DeliveryStart');
-})
+  driver_information(res, 'DeliveryStart');
+});
 
 // Order Start page control
 app.post('/deliveryStart', (req, res) => {
@@ -316,13 +379,12 @@ app.post('/deliveryStart', (req, res) => {
     console.log(date + "Driver '" + "[]" + "' canceled delivery start");
     res.redirect('/driver');
   }
-})
+});
 
 // Order Done page rendering
 app.get('/deliveryDone', (req, res) => {
-  console.log(date + "Driver '[]" + "' entered into delivery done page");
-  res.render('DeliveryDone');
-})
+  driver_information(res, 'DeliveryDone');
+});
 
 // Order Done page control
 app.post('/deliveryDone', (req, res) => {
@@ -335,13 +397,12 @@ app.post('/deliveryDone', (req, res) => {
     console.log(date + "Driver '" + "[]" + "' canceled delivery done");
     res.redirect('/driver');
   }
-})
+});
 
 // Order Back page rendering
 app.get('/driverBack', (req, res) => {
-  console.log(date + "Driver '[]" + "' entered into driver back page");
-  res.render('DriverBack');
-})
+  driver_information(res, 'DriverBack');
+});
 
 // Order Back page control
 app.post('/driverBack', (req, res) => {
@@ -354,4 +415,4 @@ app.post('/driverBack', (req, res) => {
     console.log(date + "Driver '" + "[]" + "' canceled driver back");
     res.redirect('/driver');
   }
-})
+});

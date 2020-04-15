@@ -11,13 +11,10 @@
   <form method="post">
     <h2>주문서 등록</h2><br>
     <div>
-      <% var today = new Date(); %>
-      <% today.setDate(today.getDate() + 7); %>
-      <% console.log(today); %>
       <label for="date">주문 일자&nbsp;</label>
-      <input type="date" name="order_date" min="<%=today%>"><br><br>
+      <input type="date" name="order_date"><br><br>
       <label for="address">배송지&nbsp;</label>
-      <input type="text" name="order_address" maxlength="50"><br><br>
+      <input type="text" name="order_address"><br><br>
       <label for="person_t">기사 선택&nbsp;</label>
       <select name="order_driver">
         <option value="none" selected="selected">--------</option>
