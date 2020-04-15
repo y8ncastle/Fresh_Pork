@@ -12,6 +12,14 @@ app.use(bodyParser.json());
 // Global variables
 let button_status, current_user;
 
+let temp_date = new Date();
+let date = "[Log] " + temp_date.getFullYear() + '/' + parseInt(temp_date.getMonth()+1) + '/' +
+        temp_date.getDate() + " " + temp_date.getHours() + ":" + temp_date.getMinutes() + ":" +
+        temp_date.getSeconds() + " > ";
+let db_date = temp_date.getFullYear() + '/' + parseInt(temp_date.getMonth()+1) + '/' +
+        temp_date.getDate() + " " + temp_date.getHours() + ":" + temp_date.getMinutes() + ":" +
+        temp_date.getSeconds() + " > ";
+
 // Server setting
 const port = process.env.Port || 2381;
 
@@ -45,7 +53,8 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
   pork_t: String,
-  amount: Number
+  amount: Number,
+  time: String
 });
 
 const driverSchema = new mongoose.Schema({
@@ -59,18 +68,14 @@ const driverSchema = new mongoose.Schema({
   address: String,
   location: String,
   pork_t: String,
-  amount: Number
+  amount: Number,
+  start_time: String,
+  arrival_time: String
 });
 
 const userDB = db.model("Login", personnelSchema, 'user');
 const orderDB = db.model("Manager", orderSchema, 'order');
 const driverDB = db.model("Driver", driverSchema, 'driver');
-
-// Real time check
-let temp_date = new Date();
-date = "[Log] " + temp_date.getFullYear() + '/' + parseInt(temp_date.getMonth()+1) + '/' +
-        temp_date.getDate() + " " + temp_date.getHours() + ":" + temp_date.getMinutes() + ":" +
-        temp_date.getSeconds() + " > ";
 
 // Login page rendering
 app.get('/', (req, res) => {
@@ -98,16 +103,14 @@ app.post('/', (req, res) => {
         res.send('<script type="text/javascript">alert("로그인 정보가 올바르지 않습니다"); window.location="/";</script>');
         console.log(date + "[Error] ID or Passwd does not match to DB");
       }
-
-      // Check person type
       else {
         if (login_check.includes("manager")) {
           res.send('<script type="text/javascript">alert("관리자님 환영합니다"); window.location="/manager";</script>');
-          console.log(date + "'[]" + "' logged in as a manager");
+          console.log(date + "'" + current_user + "' logged in as a manager");
         }
         else {
           res.send('<script type="text/javascript">alert("기사님 환영합니다"); window.location="/driver";</script>');
-          console.log(date + "'[]" + "' logged in as a driver");
+          console.log(date + "'" + current_user + "' logged in as a driver");
         }
         current_user = login.id;
       }
@@ -205,7 +208,7 @@ app.post('/manager', (req, res) => {
   }
   else {
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
-    console.log(date + "Manager '" + "[]" + "' logged out");
+    console.log(date + "Manager '" + current_user + "' logged out");
   }
 });
 
@@ -257,6 +260,7 @@ app.post('/orderForm', (req, res) => {
       orderDB_i.driver = info.order_drv;
       orderDB_i.pork_t = info.pork_type;
       orderDB_i.amount = info.weight;
+      orderDB_i.time = String(temp_date);
 
       orderDB_i.save((err) => {
         if (err) {
@@ -270,14 +274,14 @@ app.post('/orderForm', (req, res) => {
           });
 
           res.send('<script type="text/javascript">alert("새로운 주문이 등록되었습니다"); window.location="/manager";</script>');
-          console.log(date + "[Success] Manager '" + "[]" + "' has made an order request");
+          console.log(date + "[Success] Manager '" + current_user + "' has made an order request");
         }
       });
     }
   }
   else {
     res.send('<script type="text/javascript">alert("주문서 등록을 취소합니다"); window.location="/manager";</script>');
-    console.log(date + "Manager '" + "[]" + "' canceled the order");
+    console.log(date + "Manager '" + current_user + "' canceled the order");
   }
 });
 
@@ -292,23 +296,23 @@ app.post('/driver', (req, res) => {
 
   if (button_status === "delivery_noti") {
     res.redirect('/deliveryStatus');
-    console.log(date + "Driver '" + "[]" + "' entered into order status page");
+    console.log(date + "Driver '" + current_user + "' entered into order status page");
   }
   else if (button_status === "delivery_start") {
     res.redirect('/deliveryStart');
-    console.log(date + "Driver '[]" + "' entered into delivery start page");
+    console.log(date + "Driver '" + current_user + "' entered into delivery start page");
   }
   else if (button_status === "delivery_done") {
     res.redirect('/deliveryDone');
-    console.log(date + "Driver '[]" + "' entered into delivery done page");
+    console.log(date + "Driver '" + current_user + "' entered into delivery done page");
   }
   else if (button_status === "delivery_back") {
     res.redirect('/driverBack');
-    console.log(date + "Driver '[]" + "' entered into driver back page");
+    console.log(date + "Driver '" + current_user + "' entered into driver back page");
   }
   else {
     res.send('<script type="text/javascript">alert("로그아웃 되었습니다"); window.location="/";</script>');
-    console.log(date + "Driver '" + "[]" + "' logged out");
+    console.log(date + "Driver '" + current_user + "' logged out");
   }
 });
 
@@ -347,7 +351,7 @@ function driver_information(res, loc) {
 
     res.render(loc, {stat_date:status_date, stat_adr:status_adr, stat_driver:status_driver, stat_pork:t_status_pork});
   });
-}
+};
 
 // Order Status page rendering
 app.get('/deliveryStatus', (req, res) => {
@@ -358,15 +362,15 @@ app.get('/deliveryStatus', (req, res) => {
       driver_information(res, 'DeliveryStatus');
     else if (data_check.includes("driving")) {
       res.send('<script type="text/javascript">alert("이미 운송이 시작되었습니다"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to status page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to status page");
     }
     else if (data_check.includes("back")) {
       res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery status page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to delivery status page");
     }
     else {
       res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+      console.log(date + "[Fail] Driver '" + current_user + "' is not assigned");
     }
   });
 });
@@ -376,7 +380,7 @@ app.post('/deliveryStatus', (req, res) => {
   button_status = req.body.button;
 
   if (button_status === "order_check") {
-    console.log(date + "Driver '" + "[]" + "' checked delivery status");
+    console.log(date + "Driver '" + current_user + "' checked delivery status");
     res.redirect('/driver');
   }
 });
@@ -390,15 +394,15 @@ app.get('/deliveryStart', (req, res) => {
       driver_information(res, 'DeliveryStart');
     else if (data_check.includes("driving")) {
       res.send('<script type="text/javascript">alert("현재 위치를 확인/변경하거나 운송을 완료해주세요"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery start page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to delivery start page");
     }
     else if (data_check.includes("back")) {
       res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery start page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to delivery start page");
     }
     else {
       res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+      console.log(date + "[Fail] Driver '" + current_user + "' is not assigned");
     }
   });
 });
@@ -439,6 +443,8 @@ app.post('/deliveryStart', (req, res) => {
       driverDB_i.location = "신선 돼지 유통 직영점";
       driverDB_i.pork_t = String(order_pork);
       driverDB_i.amount = String(order_amount);
+      driverDB_i.start_time = String(db_date);
+      driverDB_i.arrival_time = "-";
 
       driverDB_i.save((err) => {
         if (err) {
@@ -456,13 +462,13 @@ app.post('/deliveryStart', (req, res) => {
           })
 
           res.send('<script type="text/javascript">alert("배송이 시작되었습니다"); window.location="/driver";</script>');
-          console.log(date + "Driver '[]" + "' has started delivery");
+          console.log(date + "Driver '" + current_user + "' has started delivery");
         }
       });
     });
   }
   else {
-    console.log(date + "Driver '" + "[]" + "' canceled delivery start");
+    console.log(date + "Driver '" + current_user + "' canceled delivery start");
     res.redirect('/driver');
   }
 });
@@ -473,20 +479,56 @@ app.get('/deliveryDone', (req, res) => {
     var data_check = JSON.stringify(data);
 
     if (data_check.includes("driving")) {
-      console.log(date + "Driver '" + "[]" + "' entered into delivery done page");
-      driver_information(res, 'DeliveryDone');
+      driverDB.find({driver:current_user}, (err, data) => {
+        var driver_date = data.map((obj) => {
+          return obj.date;
+        });
+
+        var driver_address = data.map((obj) => {
+          return obj.address;
+        });
+
+        var driver_id = data.map((obj) => {
+          return obj.driver;
+        });
+
+        var driver_pork = data.map((obj) => {
+          return obj.pork_t;
+        });
+
+        var driver_amount = data.map((obj) => {
+          return obj.amount;
+        });
+
+        var driver_location = data.map((obj) => {
+          return obj.location;
+        });
+
+        var t_driver_pork;
+
+        if (driver_pork === "pork_belly")
+          t_driver_pork = "삼겹살";
+        else if (driver_pork === "pork_neck")
+          t_driver_pork = "항정살";
+        else
+          t_driver_pork = "목살";
+
+        t_driver_pork += " " + driver_amount + "kg";
+
+        res.render('DeliveryDone', {stat_date:driver_date, stat_adr:driver_address, stat_driver:driver_id, stat_pork:t_driver_pork, stat_adr_cr:driver_location});
+      });
     }
     else if (data_check.includes("set")) {
       res.send('<script type="text/javascript">alert("먼저 운송을 시작해주세요"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery done page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to delivery done page");
     }
     else if (data_check.includes("back")) {
       res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery done page");
+      console.log(date + "[Fail] Driver '" + current_user + "' can't access to delivery done page");
     }
     else {
       res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+      console.log(date + "[Fail] Driver '" + current_user + "' is not assigned");
     }
   });
 });
@@ -495,12 +537,35 @@ app.get('/deliveryDone', (req, res) => {
 app.post('/deliveryDone', (req, res) => {
   button_status = req.body.button;
 
-  if (button_status === "delivery_done") {
-    ;
-  }
-  else {
-    console.log(date + "Driver '" + "[]" + "' canceled delivery done");
-    res.redirect('/driver');
+  var current_loc = req.body.current_location;
+
+  if (!current_loc || current_loc[0] !== " ") {
+    driverDB.findOne({driver:current_user}, (err, data) => {
+      if (button_status === "delivery_done") {
+        data.dv_done = "O";
+        data.arrival_time = String(db_date);
+        data.save();
+
+        userDB.findOne({id:current_user}, (err, data2) => {
+          data2.status = "back";
+          data2.save();
+        })
+
+        res.send('<script type="text/javascript">alert("배송이 완료되었습니다"); window.location="/driver";</script>');
+        console.log(date + "[Success] Driver '" + current_user + "' finished delivery work");
+      }
+      else if (button_status === "location_change") {
+        data.location = String(current_loc);
+        data.save();
+
+        res.send('<script type="text/javascript">alert("현재 배송중인 위치가 변경되었습니다"); window.location="/deliveryDone";</script>');
+        console.log(date + "[Success] Driver '" + current_user + "' changed current location");
+      }
+      else {
+        console.log(date + "Driver '" + current_user + "' canceled delivery done");
+        res.redirect('/driver');
+      }
+    });
   }
 });
 
@@ -510,12 +575,11 @@ app.get('/driverBack', (req, res) => {
     var data_check = JSON.stringify(data);
 
     if (data_check.includes("back")) {
-      console.log(date + "Driver '" + "[]" + "' entered into driver back page");
       driver_information(res, 'DriverBack');
     }
     else  {
       res.send('<script type="text/javascript">alert("접근 권한이 없습니다"); window.location="/driver";</script>');
-      console.log(date + "[Fail] Driver '" + "[]" + "' has no access to driver back page");
+      console.log(date + "[Fail] Driver '" + current_user + "' has no access to driver back page");
     }
   });
 });
@@ -528,7 +592,7 @@ app.post('/driverBack', (req, res) => {
     ;
   }
   else {
-    console.log(date + "Driver '" + "[]" + "' canceled driver back");
+    console.log(date + "Driver '" + current_user + "' canceled driver back");
     res.redirect('/driver');
   }
 });
