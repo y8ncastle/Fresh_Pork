@@ -11,8 +11,16 @@
   <form method="post">
     <h2>회사 복귀 정보</h2><br>
     <div>
-      <label for="id">사원번호&nbsp;</label>
-      <input type="text" name="manager_id" value="" disabled>
+      <label for="back_id">운전기사 사원번호&nbsp;</label>
+      <input type="text" name="back_id" value="<%=stat_b_id%>" disabled><br><br>
+      <label for="back_date">주문 일자&nbsp;</label>
+      <input type="text" name="back_date" value="<%=stat_b_date%>" disabled><br><br>
+      <label for="back_address" style="vertical-align:top">배송지&nbsp;</label>
+      <textarea name="back_address" style="resize:none" cols="50" rows="2" disabled><%=stat_b_adr%></textarea><br><br>
+      <label for="back_start_time">출발 시간&nbsp;</label>
+      <input type="text" name="back_start_time" value="<%=stat_start_t%>" disabled><br><br>
+      <label for="back_arrival_time">도착 시간&nbsp;</label>
+      <input type="text" name="back_arrival_time" value="<%=stat_arrival_t%>" disabled><br><br>
     </div><br><br>
     <div>
       <button type="submit" name="button" value="driver_back">복귀처리</button>
