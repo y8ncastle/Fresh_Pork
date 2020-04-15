@@ -97,7 +97,8 @@
 4.13. 모든 정보 기입, 기사 선택(B) 확인
 4.14. 모든 정보 기입, 고기 종류(항정살) 확인
 4.15. 모든 정보 기입, 고기 종류(목살) 확인
-4.16. 취소
+4.16. 운전 기사 DB 상태 변경 (ready > set)
+4.17. 취소
 
 4. New order form is opened
 4.1. [Error] Input NULL in order date
@@ -130,8 +131,8 @@
 4.14.1. 새로운 주문이 등록되었습니다 (팝업)
 4.15. [Success] Manager 'user' has made an order request
 4.15.1 새로운 주문이 등록되었습니다 (팝업)
-4.16. Manager 'user' canceled the order
-4.16.1. 주문서 등록을 취소합니다 (팝업)
+4.17. Manager 'user' canceled the order
+4.17.1. 주문서 등록을 취소합니다 (팝업)
 
 
 5. 운전 기사 관리 시스템 화면
@@ -152,10 +153,67 @@
 
 6. 배정알림 화면
 6.1. 주문 일자, 배송지, 운전 기사, 고기 종류 표시 확인
-6.2. 확인
+6.2. 운전 기사 status set일 때만 입장
+6.3. 확인
 
-6.2. Driver 'user' checked delivery status
+6.2. [Fail] Driver 'user' is not assigned
+6.2-1. [Fail] Driver 'user' can't access to status page
+6.2-2. [Fail] Driver 'user' can't access to delivery status page
+6.2.1. 배정된 내역이 없습니다 (팝업)
+6.2.2. 이미 운송이 시작되었습니다 (팝업)
+6.2.3. 회사 복귀 처리를 완료해주세요 (팝업)
+6.3. Driver 'user' checked delivery status
+
+
+7. 운송시작 화면
+7.1. 주문 일자, 배송지, 운전 기사, 고기 종류 표시 확인
+7.2. 배송시작
+7.3. 운전 기사 status set일 때만 입장
+7.4. 운전 기사 DB 상태 변경 (set > driving)
+7.5. 취소
+
+7. Driver 'user' entered into delivery start page
+7.2. Driver 'user' has started delivery
+7.3. [Fail] Driver 'user' is not assigned
+7.3-1. [Fail] Driver 'user' can't access to delivery start page
+7.3-2. [Fail] Driver 'user' can't access to delivery start page
+7.3.1. 배정된 내역이 없습니다 (팝업)
+7.3.2. 현재 위치를 확인/변경하거나 운송을 완료해주세요  (팝업)
+7.3.3. 회사 복귀 처리를 완료해주세요 (팝업) 
+7.5. Driver 'user' canceled delivery start
+
+
+8. 현재위치 확인 / 운송완료 화면
+8.1. 주문 일자, 배송지, 운전 기사, 고기 종류 표시 확인
+8.2. 현재 위치 변경
+8.3. 운전 기사 status driving일 때만 입장
+8.4. 배송완료
+8.5. 현재 위치-배송지 동일 확인
+8.6. 취소
+
+8. Driver 'user' entered into delivery done page
+8.3. [Fail] Driver 'user' is not assigned
+8.3-1. [Fail] Driver 'user' can't access to delivery done page
+8.3-2. [Fail] Driver 'user' can't access to delivery done page
+8.3.1 배정된 내역이 없습니다 (팝업)
+8.3.2. 먼저 운송을 시작해주세요 (팝업)
+8.3.3. 회사 복귀 처리를 완료해주세요 (팝업)
+8.6. Driver canceled delivery done
+
+
+9. 회사복귀 화면
+9.1. 주문 일자, 배송지, 운전 기사, 고기 종류 표시 확인
+9.2. 운전 기사 status back일 때만 입장
+9.3. 복귀처리
+9.4. 취소
+
+9. Driver 'user' entered into driver back page
+9.2. [Fail] Driver 'user' has no access to driver back page
+9.2.1. 접근 권한이 없습니다 (팝업)
+9.4. Driver 'user' canceled driver back
 
 
 ** 잘못된 접근 예외처리
 ** 날짜 선택 오늘부터 처리
+** 로그 user 표시
+** 타임스탬프

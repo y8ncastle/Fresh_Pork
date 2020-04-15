@@ -50,14 +50,15 @@ const orderSchema = new mongoose.Schema({
 
 const driverSchema = new mongoose.Schema({
   date: String,
-  dv_start: String,
   dv_done: String,
   dv_back: String,
   driver: {
     type: String,
     required: true
   },
-  port_t: String,
+  address: String,
+  location: String,
+  pork_t: String,
   amount: Number
 });
 
@@ -350,7 +351,24 @@ function driver_information(res, loc) {
 
 // Order Status page rendering
 app.get('/deliveryStatus', (req, res) => {
-  driver_information(res, 'DeliveryStatus');
+  userDB.find({id:current_user}, 'status', (err, data) => {
+    var data_check = JSON.stringify(data);
+
+    if (data_check.includes("set"))
+      driver_information(res, 'DeliveryStatus');
+    else if (data_check.includes("driving")) {
+      res.send('<script type="text/javascript">alert("이미 운송이 시작되었습니다"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to status page");
+    }
+    else if (data_check.includes("back")) {
+      res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery status page");
+    }
+    else {
+      res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+    }
+  });
 });
 
 // Order Status page control
@@ -365,7 +383,24 @@ app.post('/deliveryStatus', (req, res) => {
 
 // Order Start page rendering
 app.get('/deliveryStart', (req, res) => {
-  driver_information(res, 'DeliveryStart');
+  userDB.find({id:current_user}, 'status', (err, data) => {
+    var data_check = JSON.stringify(data);
+
+    if (data_check.includes("set"))
+      driver_information(res, 'DeliveryStart');
+    else if (data_check.includes("driving")) {
+      res.send('<script type="text/javascript">alert("현재 위치를 확인/변경하거나 운송을 완료해주세요"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery start page");
+    }
+    else if (data_check.includes("back")) {
+      res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery start page");
+    }
+    else {
+      res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+    }
+  });
 });
 
 // Order Start page control
@@ -373,7 +408,58 @@ app.post('/deliveryStart', (req, res) => {
   button_status = req.body.button;
 
   if (button_status === "delivery_confirm") {
-    console.log(date + "Driver '[]" + "' has started delivery");
+    let driverDB_i = new driverDB();
+
+    orderDB.find({driver:current_user}, (err, data) => {
+      var order_date = data.map((obj) => {
+        return obj.date;
+      });
+
+      var order_adr = data.map((obj) => {
+        return obj.address;
+      });
+
+      var order_driver = data.map((obj) => {
+        return obj.driver;
+      });
+
+      var order_pork = data.map((obj) => {
+        return obj.pork_t;
+      });
+
+      var order_amount = data.map((obj) => {
+        return obj.amount;
+      });
+
+      driverDB_i.date = String(order_date);
+      driverDB_i.dv_done = "-";
+      driverDB_i.dv_back = "-";
+      driverDB_i.driver = String(order_driver);
+      driverDB_i.address = String(order_adr);
+      driverDB_i.location = "신선 돼지 유통 직영점";
+      driverDB_i.pork_t = String(order_pork);
+      driverDB_i.amount = String(order_amount);
+
+      driverDB_i.save((err) => {
+        if (err) {
+          console.error(err);
+            return;
+        }
+        else {
+          userDB.findOne({id:current_user}, (err, data) => {
+            data.status = "driving";
+            data.save();
+          });
+
+          orderDB.findOne({driver:current_user}, (err, data) => {
+            data.remove();
+          })
+
+          res.send('<script type="text/javascript">alert("배송이 시작되었습니다"); window.location="/driver";</script>');
+          console.log(date + "Driver '[]" + "' has started delivery");
+        }
+      });
+    });
   }
   else {
     console.log(date + "Driver '" + "[]" + "' canceled delivery start");
@@ -383,7 +469,26 @@ app.post('/deliveryStart', (req, res) => {
 
 // Order Done page rendering
 app.get('/deliveryDone', (req, res) => {
-  driver_information(res, 'DeliveryDone');
+  userDB.find({id:current_user}, 'status', (err, data) => {
+    var data_check = JSON.stringify(data);
+
+    if (data_check.includes("driving")) {
+      console.log(date + "Driver '" + "[]" + "' entered into delivery done page");
+      driver_information(res, 'DeliveryDone');
+    }
+    else if (data_check.includes("set")) {
+      res.send('<script type="text/javascript">alert("먼저 운송을 시작해주세요"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery done page");
+    }
+    else if (data_check.includes("back")) {
+      res.send('<script type="text/javascript">alert("회사 복귀 처리를 완료해주세요"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' can't access to delivery done page");
+    }
+    else {
+      res.send('<script type="text/javascript">alert("배정된 내역이 없습니다"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' is not assigned");
+    }
+  });
 });
 
 // Order Done page control
@@ -401,7 +506,18 @@ app.post('/deliveryDone', (req, res) => {
 
 // Order Back page rendering
 app.get('/driverBack', (req, res) => {
-  driver_information(res, 'DriverBack');
+  userDB.find({id:current_user}, 'status', (err, data) => {
+    var data_check = JSON.stringify(data);
+
+    if (data_check.includes("back")) {
+      console.log(date + "Driver '" + "[]" + "' entered into driver back page");
+      driver_information(res, 'DriverBack');
+    }
+    else  {
+      res.send('<script type="text/javascript">alert("접근 권한이 없습니다"); window.location="/driver";</script>');
+      console.log(date + "[Fail] Driver '" + "[]" + "' has no access to driver back page");
+    }
+  });
 });
 
 // Order Back page control
