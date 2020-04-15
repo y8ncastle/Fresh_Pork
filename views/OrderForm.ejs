@@ -11,18 +11,23 @@
   <form method="post">
     <h2>주문서 등록</h2><br>
     <div>
+      <% var today = new Date(); %>
+      <% today.setDate(today.getDate() + 7); %>
+      <% console.log(today); %>
       <label for="date">주문 일자&nbsp;</label>
-      <input type="date" name="order_date" value="order_date"><br><br>
+      <input type="date" name="order_date" min="<%=today%>"><br><br>
       <label for="address">배송지&nbsp;</label>
       <input type="text" name="order_address" maxlength="50"><br><br>
       <label for="person_t">기사 선택&nbsp;</label>
       <select name="order_driver">
-        <option value="select" selected="selected">--------</option>
+        <option value="none" selected="selected">--------</option>
+        <% driver_ready.forEach((row) => { %>
+          <option value="<%=row%>"><%=row%></option>
+        <% }) %>
       </select><br><br>
       <label for="pork_type">고기 종류&nbsp;</label>
       <select name="pork_t">
-        <option value="select" selected="selected">--------</option>
-        <option value="pork_belly">삼겹살</option>
+        <option value="pork_belly" selected="selected">삼겹살</option>
         <option value="pork_neck">항정살</option>
         <option value="pork_neck_2">목살</option>
       </select>

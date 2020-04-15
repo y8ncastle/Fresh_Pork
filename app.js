@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 let button_status;
 
 // Server setting
-const port = process.env.Port || 3827;
+const port = process.env.Port || 2381;
 
 const server = app.listen(port, () => {
   console.log(date + "[Success] Server is ON");
@@ -162,7 +162,11 @@ app.post('/register', (req, res) => {
         userDB_i.id = info.id;
         userDB_i.passwd = info.passwd;
         userDB_i.person_t = info.person_t;
-        userDB_i.status = "ready";
+
+        if (info.person_t === "driver")
+          userDB_i.status = "ready";
+        else
+          userDB_i.status = "-";
 
         userDB_i.save((err) => {
           if (err) {
@@ -204,15 +208,47 @@ app.post('/manager', (req, res) => {
 
 // Order page rendering
 app.get('/orderForm', (req, res) => {
-  res.render('OrderForm');
+  userDB.find({status:"ready"}, 'id', (err, data) => {
+    var driver_id = data.map((obj) => {
+      return obj.id;
+    });
+
+    res.render('OrderForm', {driver_ready: driver_id});
+  });
 });
 
 // Order page contol
 app.post('/orderForm', (req, res) => {
   button_status = req.body.button;
 
+  var info = {
+    date: req.body.order_date,
+    order_adr: req.body.order_address,
+    order_drv: req.body.order_driver,
+    pork_t: req.body.pork_type,
+    weight: req.body.order_kg
+  };
+
   if (button_status === "order_confirm") {
-    console.log(date + "Manager '" + "[]" + "' confirmed an order");
+    if (!info.date) {
+      res.send('<script type="text/javascript">alert("주문 일자를 입력해주세요"); window.location="/orderForm";</script>');
+      console.log(date + "[Error] Input NULL in order date");
+    }
+    else if (!info.order_adr || info.order_adr[0] === " ") {
+      res.send('<script type="text/javascript">alert("배송지를 입력해주세요 (공백 제외)"); window.location="/orderForm";</script>');
+      console.log(date + "[Error] Input NULL in order address");
+    }
+    else if (info.order_drv === "none") {
+      res.send('<script type="text/javascript">alert("배송 기사를 선택해주세요"); window.location="/orderForm";</script>');
+      console.log(date + "[Error] No driver has been chosen");
+    }
+    else if (!info.weight) {
+      res.send('<script type="text/javascript">alert("고기 무게를 입력해주세요 (소수점 제외)"); window.location="/orderForm";</script>');
+      console.log(date + "[Error] Input NULL in pork weight");
+    }
+    else {
+      console.log(date + "[Success] Manager '" + "[]" + "' confirmed an order");
+    }
   }
   else {
     res.send('<script type="text/javascript">alert("주문서 등록을 취소합니다"); window.location="/manager";</script>');
