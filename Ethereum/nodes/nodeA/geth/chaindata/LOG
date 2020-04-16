@@ -1,0 +1,48 @@
+=============== Apr 16, 2020 (KST) ===============
+15:41:13.760311 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:41:13.769287 db@open opening
+15:41:13.771282 version@stat F·[] S·0B[] Sc·[]
+15:41:13.774301 db@janitor F·2 G·0
+15:41:13.774301 db@open done T·5.0138ms
+15:41:13.790231 db@close closing
+15:41:13.792226 db@close done T·1.9944ms
+=============== Apr 16, 2020 (KST) ===============
+15:43:00.304829 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:00.305826 version@stat F·[] S·0B[] Sc·[]
+15:43:00.305826 db@open opening
+15:43:00.305826 journal@recovery F·1
+15:43:00.307820 journal@recovery recovering @1
+15:43:00.315827 memdb@flush created L0@2 N·19 S·1KiB "\x05\xae\x0f...F!,v7":"\u0090\xc5..\xa0\xf7\xf9,v5"
+15:43:00.317823 version@stat F·[1] S·1KiB[1KiB] Sc·[0.25]
+15:43:00.326770 db@janitor F·3 G·0
+15:43:00.327768 db@open done T·21.9419ms
+=============== Apr 16, 2020 (KST) ===============
+15:43:19.344901 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:19.344901 version@stat F·[1] S·1KiB[1KiB] Sc·[0.25]
+15:43:19.345898 db@open opening
+15:43:19.345898 journal@recovery F·1
+15:43:19.347894 journal@recovery recovering @3
+15:43:19.355871 memdb@flush created L0@5 N·1 S·192B "Dat..ion,v21":"Dat..ion,v21"
+15:43:19.357867 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+15:43:19.367839 db@janitor F·4 G·0
+15:43:19.367839 db@open done T·21.9412ms
+15:43:19.569300 db@close closing
+15:43:19.574288 db@close done T·4.9872ms
+=============== Apr 16, 2020 (KST) ===============
+15:43:35.455807 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:35.456806 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+15:43:35.456806 db@open opening
+15:43:35.456806 journal@recovery F·1
+15:43:35.458801 journal@recovery recovering @6
+15:43:35.461792 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+15:43:35.473760 db@janitor F·4 G·0
+15:43:35.473760 db@open done T·16.9545ms
+=============== Apr 16, 2020 (KST) ===============
+15:44:42.081072 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:44:42.082070 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+15:44:42.082070 db@open opening
+15:44:42.082070 journal@recovery F·1
+15:44:42.084064 journal@recovery recovering @8
+15:44:42.087057 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+15:44:42.100022 db@janitor F·4 G·0
+15:44:42.100022 db@open done T·17.9523ms

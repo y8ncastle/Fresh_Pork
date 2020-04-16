@@ -11,8 +11,9 @@
 	- express   
 	- mongoose   
 	- nodemon   
-- **Node.js**   
-- **MongoDB**   
+- **Node.js**  
+- **web3.js**  
+- **MongoDB**  
 - **Ethereum Network**   
    ***   
 ## Tools   

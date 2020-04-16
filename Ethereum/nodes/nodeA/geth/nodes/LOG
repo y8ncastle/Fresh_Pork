@@ -1,0 +1,37 @@
+=============== Apr 16, 2020 (KST) ===============
+15:43:00.464402 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:00.470386 db@open opening
+15:43:00.473379 version@stat F·[] S·0B[] Sc·[]
+15:43:00.475373 db@janitor F·2 G·0
+15:43:00.476370 db@open done T·5.9837ms
+=============== Apr 16, 2020 (KST) ===============
+15:43:19.490511 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:19.491508 version@stat F·[] S·0B[] Sc·[]
+15:43:19.491508 db@open opening
+15:43:19.491508 journal@recovery F·1
+15:43:19.493503 journal@recovery recovering @1
+15:43:19.501482 memdb@flush created L0@2 N·1 S·123B "version,v1":"version,v1"
+15:43:19.503477 version@stat F·[1] S·123B[123B] Sc·[0.25]
+15:43:19.513450 db@janitor F·3 G·0
+15:43:19.513450 db@open done T·21.9416ms
+15:43:21.085245 db@close closing
+15:43:21.090233 db@close done T·4.9875ms
+=============== Apr 16, 2020 (KST) ===============
+15:43:35.597429 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:43:35.598426 version@stat F·[1] S·123B[123B] Sc·[0.25]
+15:43:35.598426 db@open opening
+15:43:35.598426 journal@recovery F·1
+15:43:35.600421 journal@recovery recovering @3
+15:43:35.609398 memdb@flush created L0@5 N·5 S·257B "loc..seq,v3":"n:\x8d..ong,v4"
+15:43:35.611392 version@stat F·[2] S·380B[380B] Sc·[0.50]
+15:43:35.619370 db@janitor F·4 G·0
+15:43:35.619370 db@open done T·20.944ms
+=============== Apr 16, 2020 (KST) ===============
+15:44:42.224688 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:44:42.225686 version@stat F·[2] S·380B[380B] Sc·[0.50]
+15:44:42.225686 db@open opening
+15:44:42.225686 journal@recovery F·1
+15:44:42.227681 journal@recovery recovering @6
+15:44:42.229675 version@stat F·[2] S·380B[380B] Sc·[0.50]
+15:44:42.239648 db@janitor F·4 G·0
+15:44:42.239648 db@open done T·13.9629ms

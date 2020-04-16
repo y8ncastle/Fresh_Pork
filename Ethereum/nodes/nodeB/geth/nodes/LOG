@@ -1,0 +1,6 @@
+=============== Apr 16, 2020 (KST) ===============
+15:45:46.160003 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:45:46.167983 db@open opening
+15:45:46.169977 version@stat F·[] S·0B[] Sc·[]
+15:45:46.171972 db@janitor F·2 G·0
+15:45:46.171972 db@open done T·3.9896ms
