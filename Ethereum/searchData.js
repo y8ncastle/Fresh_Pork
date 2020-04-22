@@ -36,10 +36,13 @@ let ABI = [
 	}
 ]
 
-let CA = "0x1a5C6a0B6b1b206e3F36413069AAAE23A1e09e0e";
+// Smart Contract Address
+let CA = "0xc1B15ebB2606fE7c2F6925E200A01B4bD578bC39";
 
+// Create Contract Object
 let Contract = new web3.eth.Contract(ABI, CA);
 
+// Call Object
 Contract.methods.var1().call().then(data => {
   console.log(data);
-})
+});

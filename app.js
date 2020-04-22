@@ -96,7 +96,7 @@ app.post('/', (req, res) => {
       var login_check = JSON.stringify(data);
 
       if (!login.id || !login.passwd) {
-        res.send('<script type="text/javascript">alert("사원번호와 비밀번호를 정확하게 입력해주세요"); window.location="/";</script>');
+        res.send('<script type="text/javascript">alert("사원번호와 비밀번호를 정확하게 입력해주세요");window.location="/";</script>');
         console.log(date + "[Error] Input NULL in ID or Passwd for login");
       }
       else if (login_check == '[]') {
