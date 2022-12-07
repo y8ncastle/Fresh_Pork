@@ -11,7 +11,7 @@
   "description": "Fresh pork distribution system based on Ethereum network",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "ejs": "^3.0.2",
+    "ejs": "^3.1.7",
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
     "mongoose": "^5.9.7",
