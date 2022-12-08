@@ -15,7 +15,7 @@
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.3",
     "mongoose": "^5.9.7",
-    "nodemon": "^2.0.2",
-    "web3": "^1.2.6"
+    "nodemon": "^2.0.20",
+    "web3": "^1.8.1"
   }
 }
